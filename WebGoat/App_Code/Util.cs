@@ -96,10 +96,13 @@ namespace OWASP.WebGoat.NET.App_Code
         }
         private static bool IsValidArgument(string args)
         {
-            // Allow only alphanumeric characters and a few safe symbols
-            foreach (char c in args)
+            // Define a whitelist of allowed arguments
+            string[] allowedArguments = { "arg1", "arg2", "arg3" }; // Replace with actual allowed arguments
+            string[] providedArguments = args.Split(' ');
+
+            foreach (string arg in providedArguments)
             {
-                if (!char.IsLetterOrDigit(c) && c != '-' && c != '_' && c != ' ' && c != '.' && c != '/')
+                if (!Array.Exists(allowedArguments, element => element == arg))
                 {
                     return false;
                 }
