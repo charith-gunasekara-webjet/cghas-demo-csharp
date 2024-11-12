@@ -13,6 +13,11 @@ namespace OWASP.WebGoat.NET.App_Code
         
         public static int RunProcessWithInput(string cmd, string args, string input)
         {
+            if (!IsValidArgument(args))
+            {
+                throw new ArgumentException("Invalid arguments provided.");
+            }
+
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 WorkingDirectory = Settings.RootDir,
@@ -89,6 +94,17 @@ namespace OWASP.WebGoat.NET.App_Code
                 }
             }
         }
+        private static bool IsValidArgument(string args)
+        {
+            // Allow only alphanumeric characters and a few safe symbols
+            foreach (char c in args)
+            {
+                if (!char.IsLetterOrDigit(c) && c != '-' && c != '_' && c != ' ' && c != '.')
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
-
