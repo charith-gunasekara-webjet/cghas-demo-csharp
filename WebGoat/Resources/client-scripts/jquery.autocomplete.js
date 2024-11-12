@@ -63,7 +63,9 @@
 
       var me, uid, autocompleteElId;
       me = this;
-      uid = Math.floor(Math.random()*0x100000).toString(16);
+      var array = new Uint32Array(1);
+      window.crypto.getRandomValues(array);
+      uid = array[0].toString(16);
       autocompleteElId = 'Autocomplete_' + uid;
 
       this.killerFn = function(e) {
