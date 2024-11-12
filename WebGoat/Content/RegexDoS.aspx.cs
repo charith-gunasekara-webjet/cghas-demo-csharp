@@ -17,7 +17,7 @@ namespace OWASP.WebGoat.NET
         /// </summary>
         protected void btnCreate_Click(object sender, EventArgs e)
         {
-            string userName = txtUsername.Text;
+            string userName = Regex.Escape(txtUsername.Text);
             string password = txtPassword.Text;
 
             Regex testPassword = new Regex(userName);
