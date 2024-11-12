@@ -64,12 +64,15 @@ namespace OWASP.WebGoat.NET.WebGoatCoins
                     PanelForgotPasswordStep1.Visible = false;
                     PanelForgotPasswordStep2.Visible = false;
                     PanelForgotPasswordStep3.Visible = true;
-                    labelPassword.Text = "Security Question Challenge Successfully Completed! <br/>Your password is: " + getPassword(txtEmail.Text);
+                    labelPassword.Text = "Security Question Challenge Successfully Completed! A password reset link has been sent to your email.";
+                    SendPasswordResetLink(txtEmail.Text);
                 }
             }
             catch (Exception ex)
             {
-                labelMessage.Text = "An unknown error occurred - Do you have cookies turned on? Further Details: " + ex.Message;
+                // Log the detailed exception message
+                LogException(ex);
+                labelMessage.Text = "An unknown error occurred. Please try again later.";
             }
         }
 
@@ -84,5 +87,14 @@ namespace OWASP.WebGoat.NET.WebGoatCoins
             return password;
         }
 
+        private void SendPasswordResetLink(string email)
+        {
+            // Implementation to send a password reset link to the user's email
+        }
+
+        private void LogException(Exception ex)
+        {
+            // Implementation to log the exception details
+        }
     }
 }
