@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
+using System.Xml.Xsl;
 using System.Xml.XPath;
 
 namespace OWASP.WebGoat.NET
@@ -25,13 +26,52 @@ namespace OWASP.WebGoat.NET
         {
             XmlDocument xDoc = new XmlDocument();
             xDoc.LoadXml(xml);
-            XmlNodeList list = xDoc.SelectNodes("//salesperson[state='" + state + "']");
+            string xpathExpression = "//salesperson[state=$state]";
+            XPathExpression expr = xDoc.CreateNavigator().Compile(xpathExpression);
+            XsltArgumentList varList = new XsltArgumentList();
+            varList.AddParam("state", "", state);
+            CustomContext context = new CustomContext(new NameTable(), varList);
+            expr.SetContext(context);
+            XmlNodeList list = xDoc.SelectNodes(expr.Expression);
             if (list.Count > 0)
             {
 
             }
 
         }
+    }
+
+    public class CustomContext : XsltContext
+    {
+        private readonly XsltArgumentList _args;
+        public CustomContext(NameTable nt, XsltArgumentList args) : base(nt)
+        {
+            _args = args;
+        }
+        public override IXsltContextFunction ResolveFunction(string prefix, string name, XPathResultType[] ArgTypes)
+        {
+            throw new NotImplementedException();
+        }
+        public override IXsltContextVariable ResolveVariable(string prefix, string name)
+        {
+            return new CustomVariable(_args.GetParam(name, string.Empty));
+        }
+        public override bool Whitespace => false;
+        public override bool PreserveWhitespace(XPathNavigator node) => false;
+        public override int CompareDocument(string baseUri, string nextbaseUri) => 0;
+    }
+
+    public class CustomVariable : IXsltContextVariable
+    {
+        private readonly object _value;
+        public CustomVariable(object value)
+        {
+            _value = value;
+        }
+        public bool IsLocal => true;
+        public bool IsParam => true;
+        public XPathResultType VariableType => XPathResultType.String;
+        public object Evaluate(XsltContext xsltContext) => _value;
     }
 }
 
