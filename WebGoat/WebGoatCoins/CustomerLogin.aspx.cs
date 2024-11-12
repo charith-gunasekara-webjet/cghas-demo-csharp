@@ -66,10 +66,19 @@ namespace OWASP.WebGoat.NET.WebGoatCoins
             
             string returnUrl = Request.QueryString["ReturnUrl"];
             
-            if (returnUrl == null) 
+            if (returnUrl == null || !IsValidReturnUrl(returnUrl)) 
                 returnUrl = "/WebGoatCoins/MainPage.aspx";
                 
             Response.Redirect(returnUrl);        
+        }
+        private bool IsValidReturnUrl(string url)
+        {
+            Uri result;
+            if (Uri.TryCreate(url, UriKind.Relative, out result))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
