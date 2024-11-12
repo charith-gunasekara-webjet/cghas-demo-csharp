@@ -13,9 +13,9 @@ namespace OWASP.WebGoat.NET.App_Code
         
         public static int RunProcessWithInput(string cmd, string args, string input)
         {
-            if (!IsValidArgument(args))
+            if (!IsValidArgument(args) || !IsValidCommand(cmd))
             {
-                throw new ArgumentException("Invalid arguments provided.");
+                throw new ArgumentException("Invalid command or arguments provided.");
             }
 
             ProcessStartInfo startInfo = new ProcessStartInfo
@@ -99,12 +99,19 @@ namespace OWASP.WebGoat.NET.App_Code
             // Allow only alphanumeric characters and a few safe symbols
             foreach (char c in args)
             {
-                if (!char.IsLetterOrDigit(c) && c != '-' && c != '_' && c != ' ' && c != '.')
+                if (!char.IsLetterOrDigit(c) && c != '-' && c != '_' && c != ' ' && c != '.' && c != '/')
                 {
                     return false;
                 }
             }
             return true;
+        }
+
+        private static bool IsValidCommand(string cmd)
+        {
+            // Whitelist of allowed commands
+            string[] allowedCommands = { "process.exe", "anotherProcess.exe" };
+            return Array.Exists(allowedCommands, element => element == cmd);
         }
     }
 }
