@@ -265,7 +265,7 @@ namespace OWASP.WebGoat.NET.App_Code.DB
 
         public string AddComment(string productCode, string email, string comment)
         {
-            string sql = "insert into Comments(productCode, email, comment) values ('" + productCode + "','" + email + "','" + comment + "');";
+            string sql = "insert into Comments(productCode, email, comment) values (@productCode, @Email, @Comment)";
             string output = null;
             
             try
@@ -275,6 +275,9 @@ namespace OWASP.WebGoat.NET.App_Code.DB
                 {
                     connection.Open();
                     SqliteCommand command = new SqliteCommand(sql, connection);
+                    command.Parameters.AddWithValue("@productCode", productCode);
+                    command.Parameters.AddWithValue("@Email", email);
+                    command.Parameters.AddWithValue("@Comment", comment);
                     command.ExecuteNonQuery();
                 }
             }
@@ -544,7 +547,8 @@ namespace OWASP.WebGoat.NET.App_Code.DB
                     return ds;
             }
         }
-
+
+
         public string GetEmailByCustomerNumber(string num)
         {
             string output = "";
@@ -570,7 +574,8 @@ namespace OWASP.WebGoat.NET.App_Code.DB
             
             return output;
         }
-
+
+
         public DataSet GetCustomerEmails(string email)
         {
             string sql = "select email from CustomerLogin where email like @Email";
